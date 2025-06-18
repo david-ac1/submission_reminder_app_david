@@ -1,6 +1,8 @@
 # submission_reminder_app_david
 
 # SUMMATIVE PROJECT FOR INTRODUCTION TO LINUX & IT TOOLS
+![Screenshot 2025-06-18 183941](https://github.com/user-attachments/assets/2467b268-4baf-4041-9c89-b700de54b5df)
+![Screenshot 2025-06-18 183958](https://github.com/user-attachments/assets/51821655-aa88-4c2f-905e-53fb7a172d98)
 
 - **Project Title:** Submission Reminder App
 - **Author:** David Achibiri 
