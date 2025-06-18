@@ -1,12 +1,13 @@
+//Student credentials
 
 student, assignment, submission status
 Chinemerem, Shell Navigation, not submitted
 Chiagoziem, Git, submitted
 Divine, Shell Navigation, not submitted
 Anissa, Shell Basics, submitted
-Osas, Git, not submitted
-Chiamaka, Shell Navigation, submitted
-Fregor, Shell Basics, submitted
-Courtney, Git, submitted
-Eric, Shell Basics, not submitted
 David, Git, submitted
+Ebuka, Shell Basics, not submitted
+Oyindamola, Shell Navigation, not submitted
+Naignon, Shell Basics, not submitted
+Mercy, Git, not submitted
+Ebuka, Shell Navigation, submitted

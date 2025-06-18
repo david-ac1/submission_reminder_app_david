@@ -1,44 +1,100 @@
-#!/usr/bin/bash
-#Let's the software know that it is a script
-
-
-set -e
-#Allow exit if command fails
-
-read -p "Dumelang(Hello), What's your name? " NAME
-#read prompt and enable user to prompt
-
-
-mkdir submission_reminder_$NAME
-#Make Directories
-
-
-mkdir submission_reminder_$NAME/app
-mkdir submission_reminder_$NAME/modules
-mkdir submission_reminder_$NAME/assets
-mkdir submission_reminder_$NAME/config
-
-#Copy files into new foldeers
-
-cp functions.sh submission_reminder_$NAME/modules
-cp reminder.sh submission_reminder_$NAME/app
-cp submissions.txt submission_reminder_$NAME/assets
-cp config.env submission_reminder_$NAME/config
-
-echo "David, Git, submitted" >> submission_reminder_$NAME/assets/submissions.txt
-echo "Ebuka, Shell Basics, not submitted" >> submission_reminder_$NAME/assets/submissions.txt
-echo "Oyindamola, Shell Navigation, not submitted" >> submission_reminder_$NAME/assets/submissions.txt
-echo "Naignon, Shell Basics, not submitted" >> submission_reminder_$NAME/assets/submissions.txt
-echo "Mercy, Git, not submitted" >> submission_reminder_$NAME/assets/submissions.txt
-echo "Ebuka, Shell Navigation, submittedd" >> submission_reminder_$NAME/assets/submissions.txt
-
-cat <<EOF > submission_reminder_$NAME/startup.sh
-
 #!/bin/bash
-#Reads and executes the content of a file in the current shell session.
 
+#Prompt user for a name
+read -p "Sawubona(Hello), What's your name? " NAME
+
+# Set base directory
+BASE_DIR="submission_reminder_$NAME"
+
+# Make Directories in project
+mkdir -p $BASE_DIR/app
+mkdir -p $BASE_DIR/modules
+mkdir -p $BASE_DIR/assets
+mkdir -p $BASE_DIR/config
+
+# Create functions.sh file
+cat <<EOF > $BASE_DIR/modules/functions.sh
+#!/bin/bash
+
+# Function to read submissions file and output students who have not submitted
+function check_submissions {
+    local submissions_file=\$1
+    echo "Checking submissions in \$submissions_file"
+
+    while IFS=, read -r student assignment status; do
+        student=\$(echo "\$student" | xargs)
+        assignment=\$(echo "\$assignment" | xargs)
+        status=\$(echo "\$status" | xargs)
+
+        if [[ "\$assignment" == "\$ASSIGNMENT" && "\$status" == "not submitted" ]]; then
+            echo "Reminder: \$student has not submitted the \$ASSIGNMENT assignment!"
+        fi
+    done < <(tail -n +2 "\$submissions_file")
+}
+EOF
+
+# Create reminder.sh file
+cat <<EOF > $BASE_DIR/app/reminder.sh
+#!/bin/bash
+
+# Source environment and functions
+source ./config/config.env
+source ./modules/functions.sh
+
+# Submissions file
+submissions_file="./assets/submissions.txt"
+
+echo "Assignment: \$ASSIGNMENT"
+echo "Days remaining to submit: \$DAYS_REMAINING"
+echo "--------------------------------------------"
+
+check_submissions \$submissions_file
+EOF
+
+# Create config.env file
+cat <<EOF > $BASE_DIR/config/config.env
+# This is the config file
+ASSIGNMENT="Shell Navigation"
+DAYS_REMAINING=2
+EOF
+
+# Create submissions.txt file
+cat <<EOF > $BASE_DIR/assets/submissions.txt
+student, assignment, submission status
+Chinemerem, Shell Navigation, not submitted
+Chiagoziem, Git, submitted
+Divine, Shell Navigation, not submitted
+Anissa, Shell Basics, submitted
+David, Git, submitted
+Ebuka, Shell Basics, not submitted
+Oyindamola, Shell Navigation, not submitted
+Naignon, Shell Basics, not submitted
+Mercy, Git, not submitted
+Ebuka, Shell Navigation, submitted
+EOF
+
+# Create startup.sh file
+cat <<EOF > $BASE_DIR/startup.sh
+#!/bin/bash
+
+# Load environment and functions
+source ./config/config.env
+source ./modules/functions.sh
+
+echo "--------------------------------------------"
+echo "Welcome to the Submission Reminder App!"
+echo "Assignment: \$ASSIGNMENT"
+echo "Days remaining: \$DAYS_REMAINING"
+echo "--------------------------------------------"
+
+# Run the reminder
 ./app/reminder.sh
 EOF
 
-#Enables the file to be executed by using Chmod +X
-find submission_reminder_$NAME -type f -name "*sh" -exec chmod +x {} \;
+# Make all scripts executable with chmod
+chmod +x $BASE_DIR/app/reminder.sh
+chmod +x $BASE_DIR/modules/functions.sh
+chmod +x $BASE_DIR/startup.sh
+
+echo "Environment '$BASE_DIR' created successfully. You can now run it with:"
+echo "cd $BASE_DIR && ./startup.sh"
